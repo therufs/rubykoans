@@ -29,9 +29,55 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
-def score(dice)
-  # You need to write this method
+def sortdice!(dice)
+  dice = dice.sort!
 end
+
+def score_triple(dice) ## man i would love a (rest list) here
+  score = 0
+  sortdice!(dice)
+  count = dice.length - 2
+  count.times do
+    if dice[0] == dice[1] && dice[0] == dice[2]
+      score = dice[0] * 100
+      dice.shift(3)  ## think this is going to cause problems, because then dice is a lot shorter than count.times-2 ... hmm, it didn't
+    end
+    if score == 100
+      score = 1000   ## also this is hells of ugly
+    end
+  end
+  score
+end
+
+
+def score_fives(dice)
+  points = 0
+  dice.each do |d|
+    if d == 5
+      points = points + 50
+    end
+  end
+  points
+end
+
+def score_ones(dice)
+  points = 0
+  dice.each do |d|
+    if d == 1
+      points = points + 100
+    end
+  end
+  points
+end
+
+def score(dice)
+  points = 0
+  points = score_triple(dice) ## mutate dice to remove triple to continue scoring
+  points = points + score_fives(dice) ## can probably refactor this with sandwich code
+  points = points + score_ones(dice)
+  points
+end
+
 
 class AboutScoringProject < Neo::Koan
   def test_score_of_an_empty_list_is_zero
